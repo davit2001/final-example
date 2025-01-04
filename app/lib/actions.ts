@@ -107,6 +107,20 @@ export async function updateInvoice(
   redirect('/dashboard/invoices');
 }
 
+export async function editInvoiceStatus(id: string, status: string) {
+  try {
+    await sql`
+      UPDATE invoices
+      SET status = ${status}
+      WHERE id = ${id}
+    `;
+    revalidatePath('/dashboard/invoices');
+  } catch (error) {
+    console.log('error', error)
+    return { message: 'Database Error: Failed to Update Invoice Status.' };
+  }
+}
+
 export async function deleteInvoice(id: string) {
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');

@@ -21,6 +21,12 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
+export const isDateOverDue = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const dueDate = new Date(date.setDate(date.getDate() + 14));
+  return dueDate < new Date();
+};
+
 export const generateYAxis = (revenue: Revenue[]) => {
   // Calculate what labels we need to display on the y-axis
   // based on highest record and in 1000s

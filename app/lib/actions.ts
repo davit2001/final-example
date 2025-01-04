@@ -19,9 +19,10 @@ const FormSchema = z.object({
     invalid_type_error: 'Please select an invoice status.',
   }),
   date: z.string(),
+  userEmail: z.string(),
 });
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateInvoice = FormSchema.omit({ id: true, date: true,  });
 const UpdateInvoice = FormSchema.omit({ date: true, id: true });
 
 export type State = {
@@ -39,6 +40,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
+    userEmail: formData.get('userEmail'),
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -50,15 +52,20 @@ export async function createInvoice(prevState: State, formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
+  const { customerId, amount, status, userEmail } = validatedFields.data;
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
   // Insert data into the database
+  const uniqueId = Math.random().toString(36).substring(7);
   try {
     await sql`
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    `;
+    await sql`
+      INSERT INTO invoices_logs (invoice_id, invoice_id, status, user_email, is_restored, date)
+      VALUES (${uniqueId}, ${uniqueId}, ${status}, ${userEmail}, false, ${date})  
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
@@ -73,7 +80,11 @@ export async function createInvoice(prevState: State, formData: FormData) {
 }
 
 export async function updateInvoice(
-  id: string,
+  data: {
+    id: string;
+    userEmail: string;
+    date: string;
+  },
   prevState: State,
   formData: FormData,
 ) {
@@ -97,8 +108,12 @@ export async function updateInvoice(
     await sql`
       UPDATE invoices
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id}
+      WHERE id = ${data?.id}
     `;
+    await sql`
+      INSERT INTO invoices_logs (invoice_id, invoice_id, status, user_email, is_restored, date)
+      VALUES (${data?.id}, ${data?.id}, ${status}, ${data?.userEmail}, false, ${data?.date})
+   `;
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }

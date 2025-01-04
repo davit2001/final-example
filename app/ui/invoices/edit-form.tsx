@@ -14,6 +14,7 @@ import { updateInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { isDateOverDue } from '@/app/lib/utils';
 import { STATUS } from '@/app/_constants/invoices';
+import { useSession } from 'next-auth/react';
 
 export default function EditInvoiceForm({
   invoice,
@@ -22,8 +23,14 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
+  const { data } = useSession();
   const initialState: State = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const updateInvoiceWithId = updateInvoice.bind(null, {
+    id: invoice.id,
+    date: invoice.date,
+    userEmail: data?.user?.email || '',
+  });
+
   const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
 
   return (

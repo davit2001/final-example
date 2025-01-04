@@ -13,10 +13,12 @@ import { Button } from '@/app/ui/button';
 import { createInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { STATUS } from '@/app/_constants/invoices';
+import { useSession } from 'next-auth/react';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: State = { message: null, errors: {} };
   const [state, formAction] = useActionState(createInvoice, initialState);
+  const { data } = useSession();
 
   return (
     <form action={formAction}>
@@ -75,7 +77,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-
+          <input type="hidden" id="userEmail" name="userEmail" value={data?.user?.email || ''} />
           <div id="amount-error" aria-live="polite" aria-atomic="true">
             {state.errors?.amount &&
               state.errors.amount.map((error: string) => (

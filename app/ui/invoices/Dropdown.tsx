@@ -18,7 +18,7 @@ const Dropdown: FC<PropsWithChildren<DropdownProps>> = ({ Button, children, opti
     <div className="relative cursor-pointer">
       <Button onClick={() => setIsOpen((prevState) => !prevState)} />
       {isOpen && (
-        <div ref={ref} className="mt-8 bg-white z-10 p-2 border-2 border-gray-400 rounded-2xl absolute top-0 left-0">
+        <div ref={ref} className="mt-8 bg-white z-10 p-2 border-2 border-gray-400 rounded-2xl absolute top-0 left-0 flex flex-col gap-2">
           {children}
           {options.map((option) => (
             <DropDownItem key={option} status={option} onClick={() => setIsOpen(false)} />

@@ -1,6 +1,7 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: {
@@ -12,12 +13,18 @@ export const metadata: Metadata = {
 };
 export default function RootLayout({
   children,
+  params: { session }
 }: {
   children: React.ReactNode;
+  params: any
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+      <SessionProvider session={session}>
+        {children}
+      </SessionProvider>
+      </body>
     </html>
   );
 }

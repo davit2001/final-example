@@ -6,12 +6,14 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import { isDateOverDue } from '@/app/lib/utils';
+import { STATUS } from '@/app/_constants/invoices';
 
 export default function EditInvoiceForm({
   invoice,
@@ -113,7 +115,7 @@ export default function EditInvoiceForm({
                   htmlFor="pending"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  {isDateOverDue(invoice.date) ? 'Overdue' : 'Pending'} <ClockIcon className="h-4 w-4" />
+                  {isDateOverDue(invoice.date) ? 'Overdue' : 'Pending'} <ClockIcon className="h-4 w-4"/>
                 </label>
               </div>
               <div className="flex items-center">
@@ -129,7 +131,22 @@ export default function EditInvoiceForm({
                   htmlFor="paid"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Paid <CheckIcon className="h-4 w-4" />
+                  Paid <CheckIcon className="h-4 w-4"/>
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="cancelled"
+                  name="status"
+                  type="radio"
+                  value="cancelled"
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                />
+                <label
+                  htmlFor="cancelled"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-medium text-white"
+                >
+                  {STATUS.CANCELLED} <XCircleIcon className="h-4 w-4"/>
                 </label>
               </div>
             </div>

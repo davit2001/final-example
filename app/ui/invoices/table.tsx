@@ -8,11 +8,13 @@ import DropdownWrapper from '@/app/ui/invoices/DropdownWrapper';
 export default async function InvoicesTable({
   query,
   currentPage,
+  activeTab,
 }: {
   query: string;
   currentPage: number;
+  activeTab: string;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const invoices = await fetchFilteredInvoices(query, currentPage, activeTab);
 
   return (
     <div className="mt-6 flow-root">
